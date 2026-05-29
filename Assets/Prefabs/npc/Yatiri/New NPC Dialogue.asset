@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7d43b9bbbeedf24c82f53943343884d, type: 3}
+  m_Name: New NPC Dialogue
+  m_EditorClassIdentifier: 
+  npcName: Yatiri
+  npcPortrait: {fileID: 0}
+  dialogueLines:
+  - 'hola hijito como estas '
+  - te voy a dar el sopapo ansetral
+  - quines que vatite e un duleo musical con los dioses del agua y el viento
+  - 'lo haras?
+
+    o eres puto?'
+  questions:
+  - si
+  - no
+  - 'Soy gay '
+  extraDialogueLines:
+  - ala qguien diria auq si resulto se gay
+  - suete hijito
+  - me das hasco
+  typingSpeed: 0.05
+  voiceSound: {fileID: 0}
+  voicePitch: 1
+  autoProgressLines: 
+  autoProgressDelay: 1.5

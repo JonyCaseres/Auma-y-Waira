@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 750eb5d53fd29a840a363516280b6376, type: 3}
+  m_Name: New NPC Question
+  m_EditorClassIdentifier: 
+  opcion1: 'Z: si '
+  opcion2: 'X: no '
+  opcion3: 'C: soy gey'
+  respuesta1:
+  - 'grasias hijito '
+  - "nomas no dejes que te agarren los alte\xF1os"
+  respuesta2:
+  - 'eres una puta verguenza cabron '
+  - 'por eso le dije a tu madre que te abortara cuando podia '
+  respuesta3:
+  - 'SOLO CALLA TU GAY BOCA Y VE A TOCAR ESA MALDITA FLAUTA '
