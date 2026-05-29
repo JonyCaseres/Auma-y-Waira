@@ -1,7 +1,8 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.InputSystem;
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, InputSystem_Actions.IPlayerActions
 {
     [SerializeField] private Rigidbody2D rbJugador;
 
@@ -12,42 +13,63 @@ public class Player : MonoBehaviour
     [SerializeField] private float duracionDash = 0.2f;
     [SerializeField] private float cooldownDash = 1f;
 
+    private InputSystem_Actions inputActions;
     private bool haciendoDash = false;
     private bool puedeDash = true;
 
-    private Vector2 Movinput;
+    private Vector2 moveInput;
     private Vector2 ultimaDireccion;
 
-    void Update()
+    private void Awake()
     {
-        if (haciendoDash) return;
+        // Inicializar el sistema de input
+        inputActions = new InputSystem_Actions();
+    }
 
-        Movinput.x = Input.GetAxisRaw("Horizontal");
-        Movinput.y = Input.GetAxisRaw("Vertical");
+    private void OnEnable()
+    {
+        // Habilitar las acciones y registrar los callbacks
+        inputActions.Player.SetCallbacks(this);
+        inputActions.Player.Enable();
+    }
 
-        Movinput = Movinput.normalized;
-
-        // Guarda la última dirección en la que se movió
-        if (Movinput != Vector2.zero)
-        {
-            ultimaDireccion = Movinput;
-        }
-
-        // Dash con la tecla E
-        if (Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift))
-        {
-            if (puedeDash)
-            {
-                StartCoroutine(Dash());
-            }
-        }
+    private void OnDisable()
+    {
+        // Deshabilitar las acciones y remover los callbacks
+        inputActions.Player.Disable();
+        inputActions.Player.RemoveCallbacks(this);
     }
 
     private void FixedUpdate()
     {
         if (!haciendoDash)
         {
-            rbJugador.linearVelocity = Movinput * velocidad;
+            rbJugador.linearVelocity = moveInput * velocidad;
+        }
+    }
+
+    /// <summary>
+    /// Callback para la acción Move del Input System
+    /// </summary>
+    public void OnMove(InputAction.CallbackContext context)
+    {
+        moveInput = context.ReadValue<Vector2>();
+
+        // Guarda la última dirección en la que se movió
+        if (moveInput != Vector2.zero)
+        {
+            ultimaDireccion = moveInput;
+        }
+    }
+
+    /// <summary>
+    /// Callback para la acción Sprint del Input System (Dash)
+    /// </summary>
+    public void OnSprint(InputAction.CallbackContext context)
+    {
+        if (context.started && !haciendoDash && puedeDash)
+        {
+            StartCoroutine(Dash());
         }
     }
 
@@ -66,4 +88,13 @@ public class Player : MonoBehaviour
 
         puedeDash = true;
     }
+
+    // Implementar métodos no utilizados de la interfaz
+    public void OnLook(InputAction.CallbackContext context) { }
+    public void OnAttack(InputAction.CallbackContext context) { }
+    public void OnInteract(InputAction.CallbackContext context) { }
+    public void OnCrouch(InputAction.CallbackContext context) { }
+    public void OnJump(InputAction.CallbackContext context) { }
+    public void OnPrevious(InputAction.CallbackContext context) { }
+    public void OnNext(InputAction.CallbackContext context) { }
 }
