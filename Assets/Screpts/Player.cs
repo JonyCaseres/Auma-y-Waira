@@ -8,6 +8,10 @@ public class Player : MonoBehaviour, InputSystem_Actions.IPlayerActions
 
     [SerializeField] private float velocidad = 5f;
 
+    [Header("Interacción")]
+    [SerializeField] private float radioInteraccion = 1f;
+    [SerializeField] private LayerMask capasInteraccion = ~0;
+
     [Header("Dash")]
     [SerializeField] private float fuerzaDash = 20f;
     [SerializeField] private float duracionDash = 0.2f;
@@ -73,7 +77,7 @@ public class Player : MonoBehaviour, InputSystem_Actions.IPlayerActions
         }
     }
 
-    private IEnumerator Dash()
+    private IEnumerator Dash()//
     {
         puedeDash = false;
         haciendoDash = true;
@@ -92,9 +96,81 @@ public class Player : MonoBehaviour, InputSystem_Actions.IPlayerActions
     // Implementar métodos no utilizados de la interfaz
     public void OnLook(InputAction.CallbackContext context) { }
     public void OnAttack(InputAction.CallbackContext context) { }
-    public void OnInteract(InputAction.CallbackContext context) { }
+    public void OnInteract(InputAction.CallbackContext context)
+    {
+        Debug.Log($"OnInteract callback phase: {context.phase}");
+        if (context.started)
+        {
+            InteractNearby();
+        }
+    }
     public void OnCrouch(InputAction.CallbackContext context) { }
     public void OnJump(InputAction.CallbackContext context) { }
     public void OnPrevious(InputAction.CallbackContext context) { }
     public void OnNext(InputAction.CallbackContext context) { }
+
+    // Métodos compatibles con PlayerInput/SendMessages si Unity invoca mediante nombre.
+    public void OnMove(InputValue value)
+    {
+        Vector2 input = value.Get<Vector2>();
+        moveInput = input;
+        if (moveInput != Vector2.zero)
+        {
+            ultimaDireccion = moveInput;
+        }
+    }
+
+    public void OnSprint(InputValue value)
+    {
+        if (value.isPressed && !haciendoDash && puedeDash)
+        {
+            StartCoroutine(Dash());
+        }
+    }
+
+    public void OnInteract(InputValue value)
+    {
+        Debug.Log($"OnInteract InputValue pressed: {value.isPressed}");
+        if (value.isPressed)
+        {
+            InteractNearby();
+        }
+    }
+
+    public void OnAttack(InputValue value) { }
+    public void OnLook(InputValue value) { }
+    public void OnCrouch(InputValue value) { }
+    public void OnJump(InputValue value) { }
+    public void OnPrevious(InputValue value) { }
+    public void OnNext(InputValue value) { }
+
+    private void InteractNearby()
+    {
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, radioInteraccion, capasInteraccion);
+        Debug.Log($"InteractNearby: found {colliders.Length} colliders within radius {radioInteraccion}");
+
+        foreach (Collider2D collider in colliders)
+        {
+            IInteractable interactable = collider.GetComponent<IInteractable>();
+            if (interactable == null)
+            {
+                interactable = collider.GetComponentInParent<IInteractable>();
+            }
+
+            if (interactable != null && interactable.CanInteract())
+            {
+                Debug.Log($"Interacting with {collider.name} ({interactable.GetType().Name})");//
+                interactable.Interact(gameObject);
+                return;
+            }
+        }
+        Debug.Log("InteractNearby: no interactable found or none were ready.");
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.yellow;    
+        Gizmos.DrawWireSphere(transform.position, radioInteraccion);
+    }
+    
 }
