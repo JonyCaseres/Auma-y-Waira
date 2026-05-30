@@ -47,5 +47,15 @@ public class InventarioJugador : MonoBehaviour
             Debug.Log($"Removido: {item.nombre} x{cantidad}");
         }
     }
+
+    public bool TieneItem(ItemSO item)
+    {
+        if (item == null) return false;
+        foreach (var s in slots)
+        {
+            if (s.item == item && s.cantidad > 0) return true;
+        }
+        return false;
+    }
 }
 

@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public enum TipoMina { Pequeña, Mediana, Grande }
 
@@ -10,6 +11,11 @@ public class Mina : MonoBehaviour, IInteractable
 
     [SerializeField] private int cantidadPorInteraccion;
     [SerializeField] private int cantidadTotal;
+
+    [Header("Minado")]
+    [Tooltip("Segundos que tarda el minado antes de entregar recursos")]
+    public float tiempoMinado = 1f;
+    private bool isMinando = false;
 
     private void Start()
     {
@@ -28,25 +34,28 @@ public class Mina : MonoBehaviour, IInteractable
         }
     }
 
-    public bool CanInteract() => cantidadTotal > 0;
+    public bool CanInteract() => cantidadTotal > 0 && !isMinando;
 
     public void Interact(GameObject jugador)
     {
         if (!CanInteract()) return;
 
+        StartCoroutine(ProcesarInteraccion(jugador));
+    }
+
+    private IEnumerator ProcesarInteraccion(GameObject jugador)
+    {
+        isMinando = true;
+
+        // Esperar el tiempo de minado (sin animación)
+        yield return new WaitForSeconds(tiempoMinado);
+
         cantidadPorInteraccion = ObtenerCantidadAleatoria();
         cantidadPorInteraccion = Mathf.Min(cantidadPorInteraccion, cantidadTotal);
 
-        if (cantidadPorInteraccion <= 0)
-        {
-            Debug.Log($"La mina de tipo {tipoMina} no devolvió minerales esta vez.");
-            return;
-        }
-
-        InventarioJugador inv = jugador.GetComponent<InventarioJugador>();
-
         if (cantidadPorInteraccion > 0)
         {
+            InventarioJugador inv = jugador.GetComponent<InventarioJugador>();
             if (inv != null)
             {
                 inv.AgregarItem(mineral, cantidadPorInteraccion);
@@ -62,9 +71,12 @@ public class Mina : MonoBehaviour, IInteractable
             Debug.Log($"La mina de tipo {tipoMina} no devolvió minerales esta vez.");
         }
 
+        // Finalizar y desactivar la mina
         cantidadTotal -= cantidadPorInteraccion;
         cantidadTotal = 0;
         gameObject.SetActive(false);
+
+        isMinando = false;
     }
 
     private int ObtenerCantidadAleatoria()
