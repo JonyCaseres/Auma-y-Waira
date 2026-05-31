@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   opcion1: 'Z: si '
   opcion2: 'X: no '
-  opcion3: 'C: soy gey'
+  opcion3: 'C: no estoy seguro'
   respuesta1:
   - 'grasias hijito '
   - "nomas no dejes que te agarren los alte\xF1os"
   respuesta2:
-  - 'eres una puta verguenza cabron '
-  - 'por eso le dije a tu madre que te abortara cuando podia '
+  - 'eres una puta verguenza '
+  - todos estamos perdidos
   respuesta3:
-  - 'SOLO CALLA TU GAY BOCA Y VE A TOCAR ESA MALDITA FLAUTA '
+  - 'SOLO CALLA Y VE A TOCAR ESA MALDITA FLAUTA '
