@@ -22,6 +22,12 @@ public class NPCEspecial : MonoBehaviour
     public GameObject panelRespuesta3;
     public TMP_Text textoRespuesta3;
 
+    [Header("Audio")]
+    public AudioSource voiceSource; // opcional, si no se asigna se crea uno en Awake
+    public AudioClip voiceClip;     // arrastra aquí tu .mp3/.wav/.ogg directamente
+    [Range(0f, 1f)]
+    public float voiceVolume = 1f;
+
     private int dialogueIndex;
     private bool isTyping;
     private bool isDialogueActive;
@@ -33,6 +39,22 @@ public class NPCEspecial : MonoBehaviour
 
     private Coroutine typingCoroutine;
     private Coroutine respuestaCoroutine;
+
+    private void Awake()
+    {
+        if (voiceSource == null)
+        {
+            voiceSource = GetComponent<AudioSource>();
+            if (voiceSource == null)
+            {
+                voiceSource = gameObject.AddComponent<AudioSource>();
+            }
+        }
+
+        // Controlaremos el loop y reproducción desde código
+        voiceSource.loop = true;
+        voiceSource.playOnAwake = false;
+    }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -90,11 +112,17 @@ public class NPCEspecial : MonoBehaviour
         isTyping = true;
         dialogueText.SetText("");
 
+        // Iniciar sonido mientras se escribe la línea
+        StartVoice();
+
         foreach (char letter in dialogueData.dialogueLines[dialogueIndex].ToCharArray())
         {
             dialogueText.text += letter;
             yield return new WaitForSeconds(dialogueData.typingSpeed);
         }
+
+        // Al completar la línea, detener sonido
+        StopVoice();
 
         isTyping = false;
 
@@ -113,7 +141,10 @@ public class NPCEspecial : MonoBehaviour
     {
         if (isTyping)
         {
+            // Si se salta la escritura, detener la coroutine y el sonido inmediatamente
             if (typingCoroutine != null) StopCoroutine(typingCoroutine);
+            StopVoice();
+
             dialogueText.SetText(dialogueData.dialogueLines[dialogueIndex]);
             isTyping = false;
         }
@@ -145,11 +176,17 @@ public class NPCEspecial : MonoBehaviour
     private IEnumerator TypeOption(TMP_Text texto, string opcion)
     {
         texto.SetText("");
+
+        // Reproducir sonido mientras aparece la opción
+        StartVoice();
+
         foreach (char letter in opcion.ToCharArray())
         {
             texto.text += letter;
             yield return new WaitForSeconds(dialogueData.typingSpeed);
         }
+
+        StopVoice();
     }
 
     private void SeleccionarOpcion(string[] respuesta)
@@ -170,11 +207,18 @@ public class NPCEspecial : MonoBehaviour
         foreach (string linea in respuesta)
         {
             texto.SetText("");
+
+            // Iniciar sonido antes de escribir la línea de respuesta
+            StartVoice();
+
             foreach (char letter in linea.ToCharArray())
             {
                 texto.text += letter;
                 yield return new WaitForSeconds(dialogueData.typingSpeed);
             }
+
+            // Detener sonido al terminar la línea
+            StopVoice();
 
             // Guardar último diálogo mostrado
             ultimoDialogo = linea;
@@ -200,6 +244,9 @@ public class NPCEspecial : MonoBehaviour
         if (typingCoroutine != null) StopCoroutine(typingCoroutine);
         if (respuestaCoroutine != null) StopCoroutine(respuestaCoroutine);
 
+        // Asegurarse de detener cualquier sonido pendiente
+        StopVoice();
+
         isDialogueActive = false;
         mostrandoPreguntas = false;
         dialogueIndex = 0;
@@ -210,6 +257,32 @@ public class NPCEspecial : MonoBehaviour
         panelRespuesta3.SetActive(false);
 
         dialoguePanel.SetActive(false);
+    }
+
+    // Reproducir sonido en bucle para la duración de la escritura de la línea
+    private void StartVoice()
+    {
+        if (voiceSource == null) return;
+
+        // Prioriza el clip arrastrado en este componente; si no existe, usa el del ScriptableObject
+        AudioClip clipToPlay = (voiceClip != null) ? voiceClip : (dialogueData != null ? dialogueData.voiceSound : null);
+        if (clipToPlay == null) return;
+
+        voiceSource.clip = clipToPlay;
+        voiceSource.pitch = (dialogueData != null) ? dialogueData.voicePitch : 1f;
+        voiceSource.volume = voiceVolume;
+        voiceSource.loop = true;
+        voiceSource.Play();
+    }
+
+    private void StopVoice()
+    {
+        if (voiceSource == null) return;
+
+        if (voiceSource.isPlaying)
+            voiceSource.Stop();
+
+        voiceSource.clip = null;
     }
 }
 
