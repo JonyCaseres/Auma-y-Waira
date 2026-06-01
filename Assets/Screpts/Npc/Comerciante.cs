@@ -20,7 +20,8 @@ public class Comerciante : MonoBehaviour, IInteractable
 
     private void Start()
     {
-        inventarioJugador = FindObjectOfType<InventarioJugador>();
+        // Usar la API nueva para evitar obsolescencia
+        inventarioJugador = UnityEngine.Object.FindFirstObjectByType<InventarioJugador>();
 
         if (inventarioJugador == null)
             Debug.LogError("[Comerciante] No se encontró ningún InventarioJugador en la escena.");
