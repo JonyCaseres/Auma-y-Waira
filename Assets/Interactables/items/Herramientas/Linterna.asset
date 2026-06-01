@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Linterna
   m_EditorClassIdentifier: 
   nombre: Linterna
-  icono: {fileID: 0}
+  icono: {fileID: -2853100861607644596, guid: 89b9f6a6f3f00564498b1ad82245e4a8, type: 3}
   descripcion: 'Te ayudara a ver en los lugares mas obscuros '
   tipo: 0
   valor: 1

@@ -16,6 +16,30 @@ public class SlotInventario
 
 public class InventarioJugador : MonoBehaviour
 {
+    [Header("Economía")]
+    public int monedas = 0;
+
+    // Métodos auxiliares para gestionar monedas
+    public bool PuedePagar(int cantidad)
+    {
+        return monedas >= cantidad;
+    }
+
+    public bool Pagar(int cantidad)
+    {
+        if (monedas >= cantidad)
+        {
+            monedas -= cantidad;
+            return true;
+        }
+        return false;
+    }
+
+    public void AñadirMonedas(int cantidad)
+    {
+        monedas += cantidad;
+    }
+
     public List<SlotInventario> slots = new List<SlotInventario>();
 
     public void AgregarItem(ItemSO nuevoItem, int cantidad = 1)
