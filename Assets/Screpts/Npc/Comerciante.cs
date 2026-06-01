@@ -21,7 +21,30 @@ public class Comerciante : MonoBehaviour, IInteractable
     private void Start()
     {
         inventarioJugador = FindObjectOfType<InventarioJugador>();
-        panelComercio.SetActive(false);
+
+        if (inventarioJugador == null)
+            Debug.LogError("[Comerciante] No se encontró ningún InventarioJugador en la escena.");
+
+        if (panelComercio == null)
+        {
+            Debug.LogError("[Comerciante] panelComercio no está asignado en el inspector.");
+        }
+        else
+        {
+            panelComercio.SetActive(false);
+        }
+
+        if (contenedorSlots == null)
+            Debug.LogError("[Comerciante] contenedorSlots no está asignado en el inspector.");
+
+        if (slotPrefab == null)
+            Debug.LogError("[Comerciante] slotPrefab no está asignado en el inspector.");
+
+        if (textoMonedasJugador == null)
+            Debug.LogError("[Comerciante] textoMonedasJugador no está asignado en el inspector.");
+
+        if (itemsEnVenta == null || itemsEnVenta.Count == 0)
+            Debug.LogWarning("[Comerciante] No hay itemsEnVenta asignados para este comerciante.");
     }
 
     // --- Implementación de IInteractable ---
@@ -37,6 +60,12 @@ public class Comerciante : MonoBehaviour, IInteractable
 
     private void AbrirComercio()
     {
+        if (panelComercio == null || contenedorSlots == null || slotPrefab == null)
+        {
+            Debug.LogError("[Comerciante] No se puede abrir comercio porque faltan referencias de UI.");
+            return;
+        }
+
         comercioActivo = true;
         panelComercio.SetActive(true);
 
@@ -45,15 +74,39 @@ public class Comerciante : MonoBehaviour, IInteractable
             Destroy(hijo.gameObject);
 
         // Crear slots para cada ítem en venta
-        foreach (var item in itemsEnVenta)
+        if (itemsEnVenta == null || itemsEnVenta.Count == 0)
         {
-            var slotGO = Instantiate(slotPrefab, contenedorSlots);
-            var slotUI = slotGO.GetComponent<SlotUI>();
-            slotUI.Configurar(item);
+            Debug.LogWarning("[Comerciante] No hay items para mostrar en el comercio.");
+        }
+        else
+        {
+            foreach (var item in itemsEnVenta)
+            {
+                if (item == null)
+                {
+                    Debug.LogWarning("[Comerciante] Se encontró un item null en itemsEnVenta.");
+                    continue;
+                }
 
-            // Botón de compra
-            var boton = slotGO.GetComponent<Button>();
-            boton.onClick.AddListener(() => ComprarItem(item));
+                var slotGO = Instantiate(slotPrefab, contenedorSlots);
+                var slotUI = slotGO.GetComponent<SlotUI>();
+                if (slotUI == null)
+                {
+                    Debug.LogError("[Comerciante] El prefab de slot no tiene SlotUI.");
+                    continue;
+                }
+
+                slotUI.Configurar(item);
+
+                var boton = slotGO.GetComponent<Button>();
+                if (boton == null)
+                {
+                    Debug.LogError("[Comerciante] El prefab de slot no tiene un componente Button.");
+                    continue;
+                }
+
+                boton.onClick.AddListener(() => ComprarItem(item));
+            }
         }
 
         ActualizarMonedas();
@@ -95,6 +148,18 @@ public class Comerciante : MonoBehaviour, IInteractable
 
     private void ActualizarMonedas()
     {
+        if (textoMonedasJugador == null)
+        {
+            Debug.LogError("[Comerciante] textoMonedasJugador no está asignado.");
+            return;
+        }
+
+        if (inventarioJugador == null)
+        {
+            Debug.LogError("[Comerciante] InventarioJugador no encontrado.");
+            return;
+        }
+
         textoMonedasJugador.text = $"Monedas: {inventarioJugador.monedas}";
     }
 

@@ -31,7 +31,10 @@ public class Player : MonoBehaviour, InputSystem_Actions.IPlayerActions
     private void Awake()
     {
         // Inicializar el sistema de input
-        inputActions = new InputSystem_Actions();
+        if (inputActions == null)
+        {
+            inputActions = new InputSystem_Actions();
+        }
     }
 
     private void Start()
@@ -46,6 +49,17 @@ public class Player : MonoBehaviour, InputSystem_Actions.IPlayerActions
     private void OnEnable()
     {
         // Habilitar las acciones y registrar los callbacks
+        if (inputActions == null)
+        {
+            inputActions = new InputSystem_Actions();
+        }
+
+        if (inputActions.Player == null)
+        {
+            Debug.LogError("[Player] inputActions.Player es null en OnEnable.");
+            return;
+        }
+
         inputActions.Player.SetCallbacks(this);
         inputActions.Player.Enable();
     }
@@ -53,8 +67,21 @@ public class Player : MonoBehaviour, InputSystem_Actions.IPlayerActions
     private void OnDisable()
     {
         // Deshabilitar las acciones y remover los callbacks
-        inputActions.Player.Disable();
-        inputActions.Player.RemoveCallbacks(this);
+        if (inputActions == null)
+        {
+            Debug.LogWarning("[Player] inputActions es null en OnDisable.");
+            return;
+        }
+
+        if (inputActions.Player != null)
+        {
+            inputActions.Player.Disable();
+            inputActions.Player.RemoveCallbacks(this);
+        }
+        else
+        {
+            Debug.LogWarning("[Player] inputActions.Player es null en OnDisable.");
+        }
     }
 
     private void FixedUpdate()
