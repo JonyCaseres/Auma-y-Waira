@@ -194,6 +194,21 @@ public class NPCEspecial : MonoBehaviour
         mostrandoPreguntas = false;
         yaRespondio = true; // marcar que ya respondió
 
+        // Guardar que habló con la abuela (NPC especial)
+        if (SaveManager.Instance != null)
+        {
+            SaveManager.Instance.SetTalkedToGrandma(true);
+        }
+
+        // Ejemplo: si la opción 1 es "Aceptar misión", detectamos y guardamos
+        // Ajusta la comprobación según cómo tengas definidos los datos en questionData
+        if (questionData != null && questionData.respuesta1 == respuesta)
+        {
+            // guardar que aceptó la misión
+            if (SaveManager.Instance != null)
+                SaveManager.Instance.SetMissionAccepted(true);
+        }
+
         panelRespuesta1.SetActive(false);
         panelRespuesta2.SetActive(false);
         panelRespuesta3.SetActive(false);
