@@ -812,7 +812,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 373321733666624064, guid: f4584863d57352643961735984a201c0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1828809902}
   m_SourcePrefab: {fileID: 100100000, guid: f4584863d57352643961735984a201c0, type: 3}
 --- !u!4 &301912099 stripped
 Transform:
@@ -63956,6 +63959,7 @@ MonoBehaviour:
   tipoMina: 0
   cantidadPorInteraccion: 5
   cantidadTotal: 0
+  tiempoMinado: 1
 --- !u!60 &632838510
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -71029,6 +71033,36 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+--- !u!1 &1828809900 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 373321733666624064, guid: f4584863d57352643961735984a201c0, type: 3}
+  m_PrefabInstance: {fileID: 301912098}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1828809901 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4332907100570718861, guid: f4584863d57352643961735984a201c0, type: 3}
+  m_PrefabInstance: {fileID: 301912098}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1828809902
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1828809900}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f8b3240c946a78448d0b39944d7f660, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lightTransform: {fileID: 1828809901}
+  mode: 0
+  target: {fileID: 0}
+  targetRb: {fileID: 0}
+  minVelocityThreshold: 0.1
+  smooth: 1
+  smoothSpeed: 360
+  allowArrows: 1
 --- !u!1 &1897897667
 GameObject:
   m_ObjectHideFlags: 0
