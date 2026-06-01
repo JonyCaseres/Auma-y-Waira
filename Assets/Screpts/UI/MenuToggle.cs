@@ -10,22 +10,25 @@ public class MenuToggle : MonoBehaviour
 
     private void Awake()
     {
+        // Como el script está en el Player, tomamos el PlayerInput del mismo objeto
+        playerInput = GetComponent<PlayerInput>();
 
-        playerInput = FindObjectOfType<PlayerInput>();
+        // Suscribir la acción "Menu" del mapa Player
+        playerInput.actions["Menu"].performed += ctx => AbrirMenu();
+        playerInput.actions["Menu"].canceled += ctx => CerrarMenu();
     }
 
-    public void AbrirMenu()
+    private void AbrirMenu()
     {
         menuPanel.SetActive(true);
-        if (playerInput != null)
-            playerInput.SwitchCurrentActionMap("UI"); // cambiar al mapa UI
+        playerInput.SwitchCurrentActionMap("UI"); // cambiar al mapa UI
     }
 
-    public void CerrarMenu()
+    private void CerrarMenu()
     {
         menuPanel.SetActive(false);
-        if (playerInput != null)
-            playerInput.SwitchCurrentActionMap("Player"); // volver al mapa Player
+        playerInput.SwitchCurrentActionMap("Player"); // volver al mapa Player
     }
 }
+
 
