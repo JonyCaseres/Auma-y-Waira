@@ -91,6 +91,9 @@ public class SaveManager : MonoBehaviour
         Save();
     }
 
+    public bool GetTalkedToGrandma() => Data != null && Data.talkedToGrandma;
+    public bool GetMissionAccepted() => Data != null && Data.missionAccepted;
+
     public void SetPlayerName(string name)
     {
         Data.playerName = name;
@@ -108,5 +111,11 @@ public class SaveManager : MonoBehaviour
         Data.currentHealth = Mathf.Clamp(current, 0f, max);
         Data.maxHealth = Mathf.Max(1f, max);
         Save();
+    }
+
+    private void Start()
+    {
+        Debug.Log("Save path: " + Application.persistentDataPath);
+        if (Esenamanager.Instance != null) Esenamanager.Instance.CheckAndLoad();
     }
 }

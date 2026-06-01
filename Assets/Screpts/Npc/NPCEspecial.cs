@@ -28,6 +28,10 @@ public class NPCEspecial : MonoBehaviour
     [Range(0f, 1f)]
     public float voiceVolume = 1f;
 
+    [Header("Save")]
+    [Tooltip("Índice (1..3) de la opción que significa 'aceptar misión'. Ajusta en el Inspector.")]
+    public int acceptOptionIndex = 1;
+
     private int dialogueIndex;
     private bool isTyping;
     private bool isDialogueActive;
@@ -54,6 +58,15 @@ public class NPCEspecial : MonoBehaviour
         // Controlaremos el loop y reproducción desde código
         voiceSource.loop = true;
         voiceSource.playOnAwake = false;
+    }
+
+    private void Start()
+    {
+        // Si SaveManager existe y ya habló antes, reflejarlo
+        if (SaveManager.Instance != null && SaveManager.Instance.GetTalkedToGrandma())
+        {
+            yaRespondio = true;
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -92,9 +105,9 @@ public class NPCEspecial : MonoBehaviour
 
         if (mostrandoPreguntas)
         {
-            if (Input.GetKeyDown(KeyCode.Z)) SeleccionarOpcion(questionData.respuesta1);
-            if (Input.GetKeyDown(KeyCode.X)) SeleccionarOpcion(questionData.respuesta2);
-            if (Input.GetKeyDown(KeyCode.C)) SeleccionarOpcion(questionData.respuesta3);
+            if (Input.GetKeyDown(KeyCode.Z)) SeleccionarOpcion(1, questionData.respuesta1);
+            if (Input.GetKeyDown(KeyCode.X)) SeleccionarOpcion(2, questionData.respuesta2);
+            if (Input.GetKeyDown(KeyCode.C)) SeleccionarOpcion(3, questionData.respuesta3);
         }
     }
 
@@ -105,6 +118,14 @@ public class NPCEspecial : MonoBehaviour
 
         dialoguePanel.SetActive(true);
         typingCoroutine = StartCoroutine(TypeLine());
+
+        // Guardar que habló con la abuela en cuanto empiece el diálogo
+        if (SaveManager.Instance != null)
+        {
+            SaveManager.Instance.SetTalkedToGrandma(true);
+            yaRespondio = true;
+            Debug.Log("NPCEspecial: marcado talkedToGrandma = true y guardado.");
+        }
     }
 
     private IEnumerator TypeLine()
@@ -141,7 +162,6 @@ public class NPCEspecial : MonoBehaviour
     {
         if (isTyping)
         {
-            // Si se salta la escritura, detener la coroutine y el sonido inmediatamente
             if (typingCoroutine != null) StopCoroutine(typingCoroutine);
             StopVoice();
 
@@ -189,24 +209,28 @@ public class NPCEspecial : MonoBehaviour
         StopVoice();
     }
 
-    private void SeleccionarOpcion(string[] respuesta)
+    // Ahora recibe el índice de la opción seleccionada (1..3)
+    private void SeleccionarOpcion(int optionIndex, string[] respuesta)
     {
         mostrandoPreguntas = false;
         yaRespondio = true; // marcar que ya respondió
 
-        // Guardar que habló con la abuela (NPC especial)
+        // Guardar que habló con la abuela
         if (SaveManager.Instance != null)
         {
             SaveManager.Instance.SetTalkedToGrandma(true);
-        }
+            Debug.Log("NPCEspecial: guardado talkedToGrandma true al seleccionar opción.");
 
-        // Ejemplo: si la opción 1 es "Aceptar misión", detectamos y guardamos
-        // Ajusta la comprobación según cómo tengas definidos los datos en questionData
-        if (questionData != null && questionData.respuesta1 == respuesta)
-        {
-            // guardar que aceptó la misión
-            if (SaveManager.Instance != null)
+            // Si la opción seleccionada es la de aceptar misión, guardarlo
+            if (optionIndex == acceptOptionIndex)
+            {
                 SaveManager.Instance.SetMissionAccepted(true);
+                Debug.Log("NPCEspecial: guardado missionAccepted true.");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("NPCEspecial: SaveManager no encontrado al seleccionar opción.");
         }
 
         panelRespuesta1.SetActive(false);
@@ -215,6 +239,12 @@ public class NPCEspecial : MonoBehaviour
 
         dialoguePanel.SetActive(true);
         respuestaCoroutine = StartCoroutine(TypeRespuesta(dialogueText, respuesta));
+
+        // Pedir comprobación de escena inmediatamente (si existe Esenamanager)
+        if (Esenamanager.Instance != null)
+        {
+            Esenamanager.Instance.CheckAndLoad();
+        }
     }
 
     private IEnumerator TypeRespuesta(TMP_Text texto, string[] respuesta)
@@ -279,7 +309,6 @@ public class NPCEspecial : MonoBehaviour
     {
         if (voiceSource == null) return;
 
-        // Prioriza el clip arrastrado en este componente; si no existe, usa el del ScriptableObject
         AudioClip clipToPlay = (voiceClip != null) ? voiceClip : (dialogueData != null ? dialogueData.voiceSound : null);
         if (clipToPlay == null) return;
 

@@ -55,6 +55,7 @@ public class Comerciante : MonoBehaviour, IInteractable
 
     public void Interact(GameObject jugador)
     {
+        Debug.Log("[Comerciante] Interact llamado. Abriendo comercio...");
         AbrirComercio();
     }
 
