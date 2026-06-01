@@ -14,10 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   opcion1: 'Z: si '
   opcion2: 'X: no '
-  opcion3: 'C: no estoy seguro'
+  opcion3: 
   respuesta1:
   - 'grasias hijito '
-  - "nomas no dejes que te agarren los alte\xF1os"
   respuesta2:
   - 'eres una puta verguenza '
   - todos estamos perdidos
