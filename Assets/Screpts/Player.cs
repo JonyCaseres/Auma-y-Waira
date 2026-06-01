@@ -143,6 +143,35 @@ public class Player : MonoBehaviour, InputSystem_Actions.IPlayerActions
     public void OnJump(InputAction.CallbackContext context) { }
     public void OnPrevious(InputAction.CallbackContext context) { }
     public void OnNext(InputAction.CallbackContext context) { }
+    public void OnMenu(InputAction.CallbackContext context) { }
+
+    // Método compatible con PlayerInput/SendMessages para la acción "Menu".
+    // Unity invoca `OnMenu(InputValue)` vía SendMessage si PlayerInput está configurado así,
+    // por eso añadimos este overload para evitar MissingMethodException en tiempo de ejecución.
+    public void OnMenu(InputValue value)
+    {
+        // Solo responder cuando la acción se considere 'performed' o el botón está presionado
+        if (!value.isPressed)
+            return;
+
+        MenuToggle menu = FindObjectOfType<MenuToggle>();
+        if (menu == null)
+        {
+            Debug.LogWarning("[Player] No se encontró ningún MenuToggle en la escena.");
+            return;
+        }
+
+        if (menu.menuPanel == null)
+        {
+            Debug.LogWarning("[Player] MenuToggle encontrado pero su referencia menuPanel es null.");
+            return;
+        }
+
+        if (menu.menuPanel.activeSelf)
+            menu.CerrarMenu();
+        else
+            menu.AbrirMenu();
+    }
 
     // Métodos compatibles con PlayerInput/SendMessages si Unity invoca mediante nombre.
     public void OnMove(InputValue value)

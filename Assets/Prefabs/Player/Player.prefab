@@ -94,6 +94,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6091067806760820895}
   - component: {fileID: 5697775437962695049}
+  - component: {fileID: 6456956681294758370}
   - component: {fileID: 8634723349902686814}
   - component: {fileID: 1150078561078531125}
   - component: {fileID: 8286384314011277354}
@@ -177,6 +178,19 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &6456956681294758370
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 506247666167219783}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1dee46ecc21a1648baa25f47b11b5c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  menuPanel: {fileID: 0}
 --- !u!50 &8634723349902686814
 Rigidbody2D:
   serializedVersion: 5
@@ -271,6 +285,8 @@ MonoBehaviour:
   fuerzaDash: 20
   duracionDash: 0.2
   cooldownDash: 1
+  staminaBar: {fileID: 0}
+  dashStaminaCost: 25
 --- !u!114 &8915334957439955919
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -283,6 +299,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 709e294353dd3b64e9615bbe6dcd7ac5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  monedas: 0
   slots: []
 --- !u!114 &6618589870595017681
 MonoBehaviour:
