@@ -6,7 +6,7 @@ public class iniciodejuego
 {
     public void IniciarJuego()
     {
-        SceneManager.LoadScene("Nivel1");
+        SceneManager.LoadScene("Pueblo");
     }
 
 }

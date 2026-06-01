@@ -6,8 +6,20 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
+    path: Assets/Scenes/Pueblo.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
+  - enabled: 1
+    path: Assets/Scenes/Mina.unity
+    guid: 91aa4919f7160de4491badb1cb034e94
+  - enabled: 1
+    path: Assets/Scenes/lago.unity
+    guid: c234a70b7c8534e4ea023324abd2ac0a
+  - enabled: 1
+    path: Assets/Scenes/inicio.unity
+    guid: 01cd654d0c4a5f14d98a69232f094ee8
+  - enabled: 1
+    path: Assets/Scenes/sendero.unity
+    guid: a19af03499e9edc46bf0845fc53a12b0
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0
