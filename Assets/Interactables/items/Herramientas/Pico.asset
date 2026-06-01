@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Pico
   m_EditorClassIdentifier: 
   nombre: Pico
-  icono: {fileID: 0}
+  icono: {fileID: -7519690752540566523, guid: 89b9f6a6f3f00564498b1ad82245e4a8, type: 3}
   descripcion: La fiel erramienta de un minero
   tipo: 0
   valor: 1
