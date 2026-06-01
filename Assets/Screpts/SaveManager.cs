@@ -112,4 +112,10 @@ public class SaveManager : MonoBehaviour
         Data.maxHealth = Mathf.Max(1f, max);
         Save();
     }
+
+    private void Start()
+    {
+        Debug.Log("Save path: " + Application.persistentDataPath);
+        if (Esenamanager.Instance != null) Esenamanager.Instance.CheckAndLoad();
+    }
 }
