@@ -99,10 +99,10 @@ public class Comerciante : MonoBehaviour, IInteractable
 
                 slotUI.Configurar(item);
 
-                var boton = slotGO.GetComponent<Button>();
+                var boton = slotGO.GetComponent<Button>() ?? slotGO.GetComponentInChildren<Button>();
                 if (boton == null)
                 {
-                    Debug.LogError("[Comerciante] El prefab de slot no tiene un componente Button.");
+                    Debug.LogError("[Comerciante] El prefab de slot no tiene un componente Button (ni en raíz ni en hijos).");
                     continue;
                 }
 
