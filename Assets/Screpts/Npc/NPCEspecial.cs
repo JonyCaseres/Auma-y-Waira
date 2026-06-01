@@ -328,6 +328,37 @@ public class NPCEspecial : MonoBehaviour, IInteractable
 
         voiceSource.clip = null;
     }
+
+    public bool CanInteract()
+    {
+        // Devuelve true si no está ya en diálogo ni mostrando opciones
+        return !isDialogueActive && !mostrandoPreguntas;
+    }
+
+    public void Interact(GameObject jugador)
+    {
+        // Llamado por Player al interactuar (ej. InteractNearby)
+        if (!isDialogueActive)
+        {
+            if (yaRespondio)
+            {
+                MostrarUltimoDialogo();
+            }
+            else
+            {
+                StartDialogue();
+            }
+        }
+        else
+        {
+            // Si ya está en diálogo y se presiona Interact, avanzar línea
+            if (!mostrandoPreguntas)
+            {
+                NextLine();
+            }
+            // si está mostrando preguntas, puedes decidir no hacer nada
+        }
+    }
 }
 
 
