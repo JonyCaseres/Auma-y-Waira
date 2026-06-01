@@ -54,12 +54,6 @@ public class Player : MonoBehaviour, InputSystem_Actions.IPlayerActions
             inputActions = new InputSystem_Actions();
         }
 
-        if (inputActions.Player == null)
-        {
-            Debug.LogError("[Player] inputActions.Player es null en OnEnable.");
-            return;
-        }
-
         inputActions.Player.SetCallbacks(this);
         inputActions.Player.Enable();
     }
@@ -73,15 +67,8 @@ public class Player : MonoBehaviour, InputSystem_Actions.IPlayerActions
             return;
         }
 
-        if (inputActions.Player != null)
-        {
-            inputActions.Player.Disable();
-            inputActions.Player.RemoveCallbacks(this);
-        }
-        else
-        {
-            Debug.LogWarning("[Player] inputActions.Player es null en OnDisable.");
-        }
+        inputActions.Player.Disable();
+        inputActions.Player.RemoveCallbacks(this);
     }
 
     private void FixedUpdate()
