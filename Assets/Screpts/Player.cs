@@ -1,6 +1,6 @@
-using UnityEngine;
 using System.Collections;
 using UnityEngine.InputSystem;
+using UnityEngine;
 
 public class Player : MonoBehaviour, InputSystem_Actions.IPlayerActions
 {
@@ -17,6 +17,10 @@ public class Player : MonoBehaviour, InputSystem_Actions.IPlayerActions
     [SerializeField] private float duracionDash = 0.2f;
     [SerializeField] private float cooldownDash = 1f;
 
+    [Header("Stamina")]
+    [SerializeField] private barradeestamina staminaBar; // referencia al slider de estamina
+    [SerializeField] private float dashStaminaCost = 25f; // coste de stamina por dash
+
     private InputSystem_Actions inputActions;
     private bool haciendoDash = false;
     private bool puedeDash = true;
@@ -28,6 +32,15 @@ public class Player : MonoBehaviour, InputSystem_Actions.IPlayerActions
     {
         // Inicializar el sistema de input
         inputActions = new InputSystem_Actions();
+    }
+
+    private void Start()
+    {
+        // Si no asignaste la barra en el Inspector, intenta encontrarla en la escena
+        if (staminaBar == null)
+        {
+            staminaBar = FindObjectOfType<barradeestamina>();
+        }
     }
 
     private void OnEnable()
@@ -73,16 +86,24 @@ public class Player : MonoBehaviour, InputSystem_Actions.IPlayerActions
     {
         if (context.started && !haciendoDash && puedeDash)
         {
-            StartCoroutine(Dash());
+            // Comprueba y gasta stamina antes de dash. Si no hay barra asignada, permite dash.
+            if (staminaBar == null || staminaBar.TryUse(dashStaminaCost))
+            {
+                StartCoroutine(Dash());
+            }
+            else
+            {
+                Debug.Log("No hay suficiente estamina para dash.");
+            }
         }
     }
 
-    private IEnumerator Dash()//
+    private IEnumerator Dash()
     {
         puedeDash = false;
         haciendoDash = true;
 
-        rbJugador.linearVelocity = ultimaDireccion * fuerzaDash;
+        rbJugador.linearVelocity = ultimaDireccion.normalized * fuerzaDash;
 
         yield return new WaitForSeconds(duracionDash);
 
@@ -124,7 +145,14 @@ public class Player : MonoBehaviour, InputSystem_Actions.IPlayerActions
     {
         if (value.isPressed && !haciendoDash && puedeDash)
         {
-            StartCoroutine(Dash());
+            if (staminaBar == null || staminaBar.TryUse(dashStaminaCost))
+            {
+                StartCoroutine(Dash());
+            }
+            else
+            {
+                Debug.Log("No hay suficiente estamina para dash.");
+            }
         }
     }
 
@@ -159,7 +187,7 @@ public class Player : MonoBehaviour, InputSystem_Actions.IPlayerActions
 
             if (interactable != null && interactable.CanInteract())
             {
-                Debug.Log($"Interacting with {collider.name} ({interactable.GetType().Name})");//
+                Debug.Log($"Interacting with {collider.name} ({interactable.GetType().Name})");
                 interactable.Interact(gameObject);
                 return;
             }
@@ -169,8 +197,7 @@ public class Player : MonoBehaviour, InputSystem_Actions.IPlayerActions
 
     private void OnDrawGizmosSelected()
     {
-        Gizmos.color = Color.yellow;    
+        Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, radioInteraccion);
     }
-    
 }

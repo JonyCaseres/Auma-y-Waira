@@ -67,6 +67,6 @@
         "*.sln": "*.csproj",
         "*.slnx": "*.csproj"
     },
-    "dotnet.defaultSolution": "Auma y Waira.slnx",
+    "dotnet.defaultSolution": "Auma-y-Waira.slnx",
     "dotnet.enableWorkspaceBasedDevelopment": false
 }
