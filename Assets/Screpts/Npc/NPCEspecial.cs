@@ -2,7 +2,7 @@ using UnityEngine;
 using TMPro;
 using System.Collections;
 
-public class NPCEspecial : MonoBehaviour
+public class NPCEspecial : MonoBehaviour, IInteractable
 {
     [Header("Datos del diálogo inicial")]
     public NPCDialogue dialogueData;

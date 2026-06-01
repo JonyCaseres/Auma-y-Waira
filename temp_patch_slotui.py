@@ -1,4 +1,31 @@
-using UnityEngine;
+from pathlib import Path
+p = Path('Assets/Screpts/UI/SlotUI.cs')
+text = p.read_text(encoding='utf-8')
+old = '''using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
+
+public class SlotUI : MonoBehaviour
+{
+    [Header("Referencias UI")]
+    public Image icono;
+    public TMP_Text nombre;
+
+    private ItemSO item;
+
+    public void Configurar(ItemSO nuevoItem)
+    {
+        item = nuevoItem;
+        if (icono != null) icono.sprite = item.icono;
+        if (nombre != null) nombre.text = item.nombre;
+    }
+
+    public ItemSO ObtenerItem()
+    {
+        return item;
+    }
+}'''
+new = '''using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
@@ -38,4 +65,9 @@ public class SlotUI : MonoBehaviour
     {
         return item;
     }
-}
+}'''
+if old not in text:
+    raise SystemExit('pattern not found')
+text = text.replace(old, new)
+p.write_text(text, encoding='utf-8')
+print('patched SlotUI.cs')

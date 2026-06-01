@@ -131,7 +131,7 @@ GameObject:
   - component: {fileID: 8616489}
   - component: {fileID: 8616488}
   - component: {fileID: 8616487}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: 'Comerciante '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -154,7 +154,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 7b69001e90f81bc4f95785f5d2c355a2, type: 2}
   - {fileID: 11400000, guid: 5a0f19d348fae2342a6a51b285628019, type: 2}
   precioBase: 3
-  panelComercio: {fileID: 1045108686}
+  panelComercio: {fileID: 143148922}
   contenedorSlots: {fileID: 1045108687}
   slotPrefab: {fileID: 1094338207380375625, guid: dcffa6bb5500058418c624a92a9023e0, type: 3}
   textoMonedasJugador: {fileID: 1650060609}
@@ -1069,8 +1069,12 @@ PrefabInstance:
       value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 8915334957439955919, guid: f4584863d57352643961735984a201c0, type: 3}
+      propertyPath: monedas
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 8915334957439955919, guid: f4584863d57352643961735984a201c0, type: 3}
       propertyPath: slots.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8915334957439955919, guid: f4584863d57352643961735984a201c0, type: 3}
       propertyPath: slots.Array.data[0].item
@@ -71366,6 +71370,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1650060607}
   m_CullTransparentMesh: 1
+--- !u!114 &1720991364 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 939564266180654628, guid: dcffa6bb5500058418c624a92a9023e0, type: 3}
+  m_PrefabInstance: {fileID: 6943741776061549864}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1732411863
 GameObject:
   m_ObjectHideFlags: 0
@@ -71852,6 +71867,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5878093055568427375, guid: dcffa6bb5500058418c624a92a9023e0, type: 3}
+      propertyPath: icono
+      value: 
+      objectReference: {fileID: 1720991364}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
