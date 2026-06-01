@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3992365393849414604}
   - component: {fileID: 8246515704350467760}
   - component: {fileID: 5965308289651440462}
+  - component: {fileID: 6231214571508298598}
   m_Layer: 5
   m_Name: Panel
   m_TagString: Untagged
@@ -75,6 +76,30 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &6231214571508298598
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4705518826157368421}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a8695521f0d02e499659fee002a26c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 56
+    m_Right: 20
+    m_Top: 183
+    m_Bottom: 0
+  m_ChildAlignment: 0
+  m_StartCorner: 0
+  m_StartAxis: 0
+  m_CellSize: {x: 120, y: 130}
+  m_Spacing: {x: 50, y: 50}
+  m_Constraint: 0
+  m_ConstraintCount: 2
 --- !u!1 &7765633566183403698
 GameObject:
   m_ObjectHideFlags: 0
@@ -106,11 +131,11 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 3992365393849414604}
   - {fileID: 1387365481866534183}
   - {fileID: 3498190188186332928}
   - {fileID: 1946061557789671458}
   - {fileID: 9037215787392871214}
-  - {fileID: 3992365393849414604}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
