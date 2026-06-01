@@ -10,7 +10,7 @@ public class iniciodeecena : MonoBehaviour
     }
     public void IniciarJuego()
     {
-        SceneManager.LoadScene("Pueblo");
+        SceneManager.LoadScene("cinematicaI");
     }
 
     void Update()
