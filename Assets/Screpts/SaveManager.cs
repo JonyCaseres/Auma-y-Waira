@@ -91,6 +91,9 @@ public class SaveManager : MonoBehaviour
         Save();
     }
 
+    public bool GetTalkedToGrandma() => Data != null && Data.talkedToGrandma;
+    public bool GetMissionAccepted() => Data != null && Data.missionAccepted;
+
     public void SetPlayerName(string name)
     {
         Data.playerName = name;
