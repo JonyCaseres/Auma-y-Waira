@@ -6,27 +6,26 @@ using UnityEngine.UI;
 public class SceneTrigger : MonoBehaviour
 {
     [Header("Condiciones de activación")]
-    [Tooltip("Requerir que el jugador haya hablado con la abuela (SaveManager)")]
+    [Tooltip("Si true, requiere que SaveManager.talkedToGrandma sea true para permitir avanzar.")]
     [SerializeField] private bool requireTalkedToGrandma = true;
-    [Tooltip("Requerir además que haya aceptado la misión")]
+    [Tooltip("Si true, invierte la condición anterior: requiere que talkedToGrandma sea false.")]
+    [SerializeField] private bool invertTalkRequirement = false;
+
+    [Tooltip("Si true, requiere que SaveManager.missionAccepted sea true para permitir avanzar.")]
     [SerializeField] private bool requireMissionAccepted = false;
+    [Tooltip("Invertir la condición de misión (requiere false si se activa).")]
+    [SerializeField] private bool invertMissionRequirement = false;
 
     [Header("Detección")]
-    [Tooltip("Tag del objeto que activa el trigger (normalmente 'Player')")]
     [SerializeField] private string requiredTag = "Player";
-    [Tooltip("Sólo disparar una vez")]
     [SerializeField] private bool singleUse = true;
 
     [Header("Carga (comportamiento)")]
-    [Tooltip("Tiempo en segundos que el jugador debe permanecer dentro del trigger para activar la carga")]
     [SerializeField, Min(0f)] private float requiredStaySeconds = 1.5f;
-    [Tooltip("Retraso adicional después de completar el tiempo de permanencia antes de cargar (segundos)")]
     [SerializeField, Min(0f)] private float delayAfterHold = 0.3f;
-    [Tooltip("Si true, intenta usar Esenamanager; si no existe, carga la siguiente escena del build index")]
     [SerializeField] private bool useSceneManagerSingleton = true;
 
     [Header("UI (opcional)")]
-    [Tooltip("Image que representará el progreso de permanencia (fillAmount 0..1). Dejar vacío si no se usa.")]
     [SerializeField] private Image progressFill;
 
     private bool used = false;
@@ -34,7 +33,6 @@ public class SceneTrigger : MonoBehaviour
 
     private void Reset()
     {
-        // Asegurar que tiene Collider2D y es trigger para facilitar configuración en Inspector
         var col = GetComponent<Collider2D>();
         if (col == null)
         {
@@ -52,19 +50,29 @@ public class SceneTrigger : MonoBehaviour
         if (used && singleUse) return;
         if (!string.IsNullOrEmpty(requiredTag) && !other.CompareTag(requiredTag)) return;
 
-        // Verificar SaveManager condiciones
+        // Intentar recargar los datos de disco justo antes de comprobar
         if (SaveManager.Instance != null)
         {
-            if (requireTalkedToGrandma && !SaveManager.Instance.GetTalkedToGrandma()) return;
-            if (requireMissionAccepted && !SaveManager.Instance.GetMissionAccepted()) return;
+            SaveManager.Instance.Load();
         }
         else
         {
-            // Si SaveManager no existe, sólo permitimos avanzar si no se requieren condiciones
-            if (requireTalkedToGrandma || requireMissionAccepted) return;
+used = false;            Debug.LogWarning("SceneTrigger: SaveManager no presente en escena. Asegúrate de añadirlo manualmente a la escena inicial.");
         }
 
-        // Iniciar coroutine de permanencia
+        // Depuración: mostrar estado actual
+        bool talked = SaveManager.Instance != null && SaveManager.Instance.Data != null && SaveManager.Instance.Data.talkedToGrandma;
+        bool mission = SaveManager.Instance != null && SaveManager.Instance.Data != null && SaveManager.Instance.Data.missionAccepted;
+        Debug.Log($"SceneTrigger: OnTriggerEnter2D detected by '{other.name}'. Save flags -> talkedToGrandma: {talked}, missionAccepted: {mission}");
+
+        // Evaluar condiciones con posibilidad de inversión
+        if (!CheckConditions(talked, mission))
+        {
+            Debug.Log("SceneTrigger: condiciones no cumplidas. No se iniciará la carga.");
+            return;
+        }
+
+        // Iniciar coroutine de permanencia (hold)
         if (holdCoroutine != null) StopCoroutine(holdCoroutine);
         holdCoroutine = StartCoroutine(HoldAndLoadCoroutine(other.gameObject));
     }
@@ -73,7 +81,6 @@ public class SceneTrigger : MonoBehaviour
     {
         if (!string.IsNullOrEmpty(requiredTag) && !other.CompareTag(requiredTag)) return;
 
-        // Cancelar si sale antes de completar
         if (holdCoroutine != null)
         {
             StopCoroutine(holdCoroutine);
@@ -83,6 +90,23 @@ public class SceneTrigger : MonoBehaviour
         }
     }
 
+    private bool CheckConditions(bool talked, bool mission)
+    {
+        if (requireTalkedToGrandma)
+        {
+            bool expected = !invertTalkRequirement;
+            if (talked != expected) return false;
+        }
+
+        if (requireMissionAccepted)
+        {
+            bool expected = !invertMissionRequirement;
+            if (mission != expected) return false;
+        }
+
+        return true;
+    }
+
     private IEnumerator HoldAndLoadCoroutine(GameObject activator)
     {
         float elapsed = 0f;
@@ -90,7 +114,6 @@ public class SceneTrigger : MonoBehaviour
 
         while (elapsed < requiredStaySeconds)
         {
-            // Si el activator desaparece o no está en el trigger, abortar (seguridad)
             if (activator == null) yield break;
 
             elapsed += Time.deltaTime;
@@ -98,11 +121,9 @@ public class SceneTrigger : MonoBehaviour
             yield return null;
         }
 
-        // Completó permanencia
         if (progressFill != null) progressFill.fillAmount = 1f;
         if (delayAfterHold > 0f) yield return new WaitForSeconds(delayAfterHold);
 
-        // Marcar usado si corresponde
         if (singleUse) used = true;
 
         // Ejecutar carga mediante Esenamanager o fallback
@@ -112,7 +133,6 @@ public class SceneTrigger : MonoBehaviour
         }
         else
         {
-            // Fallback: cargar siguiente escena en Build Settings
             int nextIndex = SceneManager.GetActiveScene().buildIndex + 1;
             if (nextIndex < SceneManager.sceneCountInBuildSettings)
             {
@@ -127,7 +147,6 @@ public class SceneTrigger : MonoBehaviour
         holdCoroutine = null;
     }
 
-    // Método público para reactivar el trigger si lo necesitas
     public void ResetTrigger()
     {
         used = false;
