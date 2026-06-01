@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 3e2cc31187c8eff42baab5012cfb7de0
+guid: 8b5aaec1a805bdd4eb269e5499f4614d
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 9127586614179246950
-    second: 3agua_0
+      213: -3366507219220484126
+    second: 6salemina_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: 3agua_0
+      name: 6salemina_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 512
-        height: 347
+        width: 910
+        height: 491
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 663b3c26aa3bbae70800000000000000
-      internalID: 9127586614179246950
+      spriteID: 2ef23984583c741d0800000000000000
+      internalID: -3366507219220484126
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      3agua_0: 9127586614179246950
+      6salemina_0: -3366507219220484126
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

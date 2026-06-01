@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 03303ccf0e337494cb89c81058f1b8eb
+guid: 8ee87322cf4e71147a106548c0f199ed
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -5906384439953663369
-    second: 1mina_0
+      213: -3442704999471683698
+    second: "4ca\xF1on_0"
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: 1mina_0
+      name: "4ca\xF1on_0"
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 856
-        height: 427
+        width: 506
+        height: 367
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 77adaad25ae480ea0800000000000000
-      internalID: -5906384439953663369
+      spriteID: e8767001b0e0930d0800000000000000
+      internalID: -3442704999471683698
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      1mina_0: -5906384439953663369
+      "4ca\xF1on_0": -3442704999471683698
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -39,29 +39,34 @@ public class Camara : MonoBehaviour
             yield break;
         }
 
+        // Calcular tamaño del cuadro en unidades mundo en el plano referenceZ
         float viewHeight, viewWidth;
         GetCameraWorldSizeAtZ(referenceZ, out viewHeight, out viewWidth);
-        Debug.Log($"[Camara] viewHeight={viewHeight:F3}, viewWidth={viewWidth:F3}, referenceZ={referenceZ}");
 
         Vector3 startPos = transform.position;
-        Vector3 upTarget = startPos + Vector3.up * viewHeight;
-        Vector3 rightTarget = upTarget + Vector3.right * viewWidth;
-        Vector3 downTarget = rightTarget + Vector3.down * viewHeight * 2.5f;
+        Vector3 up1 = startPos + Vector3.up * viewHeight;                 // primer movimiento arriba
+        Vector3 up2 = up1 + Vector3.up * viewHeight;                      // segundo movimiento arriba
+        Vector3 right = up2 + Vector3.right * viewWidth;                 // movimiento a la derecha (ancho de la cam)
+        Vector3 down1 = right + Vector3.down * viewHeight;               // primer movimiento abajo
+        Vector3 down2 = down1 + Vector3.down * viewHeight;               // segundo movimiento abajo (añadido)
 
-        Debug.Log($"[Camara] start={startPos}, upTarget={upTarget}, rightTarget={rightTarget}, downTarget={downTarget}");
+        Debug.Log($"[Camara] start={startPos}, up1={up1}, up2={up2}, right={right}, down1={down1}, down2={down2}");
 
         do
         {
-            yield return MoveTo(upTarget, segmentDuration);
+            yield return MoveTo(up1, segmentDuration);
             yield return new WaitForSeconds(pauseBetweenSegments);
 
-            yield return MoveTo(rightTarget, segmentDuration);
+            yield return MoveTo(up2, segmentDuration);
             yield return new WaitForSeconds(pauseBetweenSegments);
 
-            yield return MoveTo(downTarget, segmentDuration);
+            yield return MoveTo(right, segmentDuration);
             yield return new WaitForSeconds(pauseBetweenSegments);
 
-            yield return MoveTo(startPos, segmentDuration);
+            yield return MoveTo(down1, segmentDuration);
+            yield return new WaitForSeconds(pauseBetweenSegments);
+
+            yield return MoveTo(down2, segmentDuration);
             yield return new WaitForSeconds(pauseBetweenSegments);
         }
         while (loop);
