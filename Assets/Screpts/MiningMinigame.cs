@@ -1,92 +1,125 @@
 using UnityEngine;
-using System; // Necesario para los Callbacks (Action)
+using UnityEngine.Events;
+using System;
 
 public class MiningMinigame : MonoBehaviour
 {
-    // Singleton para acceder fácilmente desde cualquier Mina
     public static MiningMinigame Instance { get; private set; }
 
-    [Header("Referencias UI")]
-    public GameObject contenedorUI; // El panel principal que contiene el minijuego
-    public RectTransform needle;
-    public RectTransform targetArea;
-    public RectTransform backgroundBar;
+    [Header("UI References")]
+    public GameObject contenedorUI;
+    public RectTransform trackArea;    // La barra de fondo
+    public RectTransform successZone;  // La zona verde
+    public RectTransform marker;       // La aguja/pica
 
-    [Header("Ajustes del Juego")]
-    public float needleSpeed = 400f;
-    
-    private int direction = 1;
-    private float halfBarWidth;
-    private bool juegoActivo = false;
+    [Header("Settings")]
+    public float speed = 1.5f; // Velocidad del marcador
 
-    // Esta variable guardará la función que le pasemos desde Mina.cs
+    [Header("Efectos y 'Juice' (Asignar en Inspector)")]
+    public UnityEvent OnMineSuccess; // Conecta aquí partículas o sonidos de éxito
+    public UnityEvent OnMineFail;    // Conecta aquí sonidos de rebote en la piedra
+
     private Action<bool> onMinigameComplete;
+
+    // Máquina de estados interna
+    private enum State { Idle, Running, Result }
+    private State currentState = State.Idle;
+
+    private float t = 0f; // Posición normalizada (0 a 1)
+    private int direction = 1; // 1 (derecha/arriba), -1 (izquierda/abajo)
 
     private void Awake()
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
         
-        contenedorUI.SetActive(false); // Ocultar al inicio
+        contenedorUI.SetActive(false);
     }
 
-    void Start()
+    private void Update()
     {
-        halfBarWidth = backgroundBar.rect.width / 2f;
-    }
+        if (currentState != State.Running) return;
 
-    void Update()
-    {
-        if (!juegoActivo) return;
+        UpdateMarker();
 
-        MoveNeedle();
-
+        // Detectar input (puedes cambiarlo al New Input System si lo prefieres)
         if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space))
         {
-            CheckMiningResult();
+            CheckResult();
         }
     }
 
-    // Función que llama Mina.cs para empezar
     public void IniciarMinijuego(Action<bool> callbackResultado)
     {
         onMinigameComplete = callbackResultado;
         
-        // Reiniciar posición de la aguja y activar UI
-        needle.anchoredPosition = new Vector2(-halfBarWidth, needle.anchoredPosition.y);
+        // Reiniciar variables
+        t = 0f;
         direction = 1;
         
         contenedorUI.SetActive(true);
-        juegoActivo = true;
+        currentState = State.Running;
     }
 
-    private void MoveNeedle()
+    private void UpdateMarker()
     {
-        needle.anchoredPosition += new Vector2(needleSpeed * direction * Time.deltaTime, 0);
+        // Mover t entre 0 y 1
+        t += speed * direction * Time.deltaTime;
 
-        if (needle.anchoredPosition.x >= halfBarWidth)
+        if (t >= 1f)
         {
-            needle.anchoredPosition = new Vector2(halfBarWidth, needle.anchoredPosition.y);
+            t = 1f;
             direction = -1;
         }
-        else if (needle.anchoredPosition.x <= -halfBarWidth)
+        else if (t <= 0f)
         {
-            needle.anchoredPosition = new Vector2(-halfBarWidth, needle.anchoredPosition.y);
+            t = 0f;
             direction = 1;
         }
+
+        // Aplicar la posición usando Lerp (asumiendo movimiento horizontal)
+        // Si tu barra es vertical, cambia anchoredPosition.x por anchoredPosition.y
+        float width = trackArea.rect.width;
+        float xPos = Mathf.Lerp(-width / 2f, width / 2f, t);
+        marker.anchoredPosition = new Vector2(xPos, marker.anchoredPosition.y);
     }
 
-    private void CheckMiningResult()
+    private void CheckResult()
     {
-        juegoActivo = false;
-        float needlePos = needle.anchoredPosition.x;
-        float targetMinX = targetArea.anchoredPosition.x - (targetArea.rect.width / 2f);
-        float targetMaxX = targetArea.anchoredPosition.x + (targetArea.rect.width / 2f);
+        currentState = State.Result;
 
-        bool exito = (needlePos >= targetMinX && needlePos <= targetMaxX);
+        // Lógica inspirada en Candrapota: comprobar si el marcador está dentro de los límites de la zona verde
+        float markerPos = marker.anchoredPosition.x;
+        float zoneMin = successZone.anchoredPosition.x - (successZone.rect.width / 2f);
+        float zoneMax = successZone.anchoredPosition.x + (successZone.rect.width / 2f);
 
-        // Ocultar UI y enviar el resultado de vuelta a Mina.cs
+        bool isSuccess = markerPos >= zoneMin && markerPos <= zoneMax;
+
+        if (isSuccess)
+        {
+            OnMineSuccess?.Invoke();
+        }
+        else
+        {
+            OnMineFail?.Invoke();
+        }
+
+        // Pequeño retraso para que el jugador vea dónde detuvo la aguja antes de cerrar
+        Invoke(nameof(CloseMinigame), 0.5f);
+    }
+
+    private void CloseMinigame()
+    {
         contenedorUI.SetActive(false);
-        onMinigameComplete?.Invoke(exito);
+        currentState = State.Idle;
+        
+        // Ejecutar la lógica de Mina.cs (entregar los ítems basándose en si fue un éxito)
+        // Tomamos el estado del último CheckResult
+        float markerPos = marker.anchoredPosition.x;
+        float zoneMin = successZone.anchoredPosition.x - (successZone.rect.width / 2f);
+        float zoneMax = successZone.anchoredPosition.x + (successZone.rect.width / 2f);
+        bool isSuccess = markerPos >= zoneMin && markerPos <= zoneMax;
+
+        onMinigameComplete?.Invoke(isSuccess);
     }
 }
