@@ -1532,8 +1532,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -2.830017, y: 1.4199829}
-  m_SizeDelta: {x: 192.29, y: 110.29}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &289891488
 MonoBehaviour:
@@ -69582,10 +69582,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   contenedorUI: {fileID: 1364473261}
-  needle: {fileID: 862501028}
-  targetArea: {fileID: 180019948}
-  backgroundBar: {fileID: 1640942680}
-  needleSpeed: 400
+  trackArea: {fileID: 0}
+  successZone: {fileID: 0}
+  marker: {fileID: 0}
+  speed: 1.5
+  OnMineSuccess:
+    m_PersistentCalls:
+      m_Calls: []
+  OnMineFail:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1444332399
 GameObject:
   m_ObjectHideFlags: 0
